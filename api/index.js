@@ -11,7 +11,7 @@ app.use(cors());
 app.use((req, res, next) => {
   res.header(
     "Access-Control-Allow-Origin",
-    "https://chess-vite-client.vercel.app/"
+    "https://chess-vite-client.vercel.app"
   );
   res.header("Access-Control-Allow-Headers", "Content-Type");
   res.setHeader("Access-Control-Allow-Credentials", true);
@@ -39,7 +39,7 @@ const port = process.env.PORT || 4242;
 // upgrade http server to websocket server
 const io = new Server(server, {
   cors: {
-    origin: "https://chess-vite-client.vercel.app/",
+    origin: "https://chess-vite-client.vercel.app",
     methods: ["GET", "POST"],
     allowedHeaders: ["Access-Control-Allow-Origin"],
     credentials: true,
