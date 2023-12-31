@@ -42,6 +42,7 @@ const io = new Server(server, {
     origin: [
       "https://chess-vite-client.vercel.app",
       "https://chess-vite-client.vercel.app/",
+      "https://chess-vite-client.vercel.app/playvfriend",
     ],
     methods: ["GET", "POST"],
     allowedHeaders: ["Access-Control-Allow-Origin"],
@@ -179,7 +180,7 @@ app.get("/api", (req, res) => {
   const path = `/api/item/${uuidV4()}`;
   res.setHeader("Content-Type", "text/html");
   res.setHeader("Cache-Control", "s-max-age=1, stale-while-revalidate");
-  res.end(`Hello! Go to item 5: <a href="${path}">${path}</a>`);
+  res.end(`Hello! Go to item 6: <a href="${path}">${path}</a>`);
 });
 
 server.listen(port, () => {
