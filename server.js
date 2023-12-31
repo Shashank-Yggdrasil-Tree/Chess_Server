@@ -1,9 +1,12 @@
 const express = require("express");
+var cors = require("cors");
 const { Server } = require("socket.io");
 const { v4: uuidV4 } = require("uuid");
 const http = require("http");
 
 const app = express(); // initialize express
+
+app.use(cors());
 
 const server = http.createServer(app);
 
