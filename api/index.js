@@ -19,10 +19,32 @@ const server = http.createServer(app);
 // set port to value received from environment variable or 4242 if null
 const port = process.env.PORT || 4242;
 
+const allowCors = (socket, next) => {
+  socket.handshake.headers["Access-Control-Allow-Credentials"] = true;
+  socket.handshake.headers["Access-Control-Allow-Origin"] = "*";
+  socket.handshake.headers["Access-Control-Allow-Methods"] =
+    "GET,OPTIONS,PATCH,DELETE,POST,PUT";
+  socket.handshake.headers["Access-Control-Allow-Headers"] =
+    "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version";
+
+  // Handle OPTIONS requests
+  if (socket.handshake.method === "OPTIONS") {
+    socket.disconnect(true);
+    return;
+  }
+
+  // Call the next middleware in the chain
+  next();
+};
+
+// Use the middleware with your Socket.IO server
+
 // upgrade http server to websocket server
 const io = new Server(server, {
   cors: "*", // allow connection from any origin
 });
+
+io.use(allowCors);
 
 // Note:
 // For simplicity, we’ll be making use of a Javascript Map.
