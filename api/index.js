@@ -6,29 +6,7 @@ const http = require("http");
 
 const app = express(); // initialize express
 
-app.use(cors());
-
-app.use((req, res, next) => {
-  res.header(
-    "Access-Control-Allow-Origin",
-    "https://chess-vite-client.vercel.app"
-  );
-  res.header("Access-Control-Allow-Headers", "Content-Type");
-  res.setHeader("Access-Control-Allow-Credentials", true);
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  // another common pattern
-  // res.setHeader('Access-Control-Allow-Origin', req.headers.origin);
-  res.setHeader(
-    "Access-Control-Allow-Methods",
-    "GET,OPTIONS,PATCH,DELETE,POST,PUT"
-  );
-  res.setHeader(
-    "Access-Control-Allow-Headers",
-    "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version"
-  );
-  next();
-});
-
+// app.use(cors());
 const server = http.createServer(app);
 
 // set port to value received from environment variable or 4242 if null
@@ -36,18 +14,21 @@ const port = process.env.PORT || 4242;
 
 // Use the middleware with your Socket.IO server
 
+const corsOptions = {
+  origin: [
+    "https://chess-vite-client.vercel.app",
+    "https://chess-vite-client.vercel.app/playvfriend",
+  ],
+  methods: ["GET", "POST"],
+  credentials: true,
+  optionsSuccessStatus: 204, // for preflight requests
+};
+
+app.use(cors(corsOptions));
+
 // upgrade http server to websocket server
 const io = new Server(server, {
-  cors: {
-    origin: [
-      "https://chess-vite-client.vercel.app",
-      "https://chess-vite-client.vercel.app/",
-      "https://chess-vite-client.vercel.app/playvfriend",
-    ],
-    methods: ["GET", "POST"],
-    allowedHeaders: ["Access-Control-Allow-Origin"],
-    credentials: true,
-  },
+  cors: corsOptions,
 });
 
 // Note:
@@ -178,9 +159,7 @@ io.on("connection", (socket) => {
 
 app.get("/api", (req, res) => {
   const path = `/api/item/${uuidV4()}`;
-  res.setHeader("Content-Type", "text/html");
-  res.setHeader("Cache-Control", "s-max-age=1, stale-while-revalidate");
-  res.end(`Hello! Go to item 6: <a href="${path}">${path}</a>`);
+  res.end(`Hello! Go to item 42: <a href="${path}">${path}</a>`);
 });
 
 server.listen(port, () => {
