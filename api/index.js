@@ -12,6 +12,8 @@ app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "http://localhost:5173");
   res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
   res.header("Access-Control-Allow-Headers", "Content-Type");
+  res.setHeader("Content-Type", "text/html");
+  res.setHeader("Cache-Control", "s-max-age=1, stale-while-revalidate");
   next();
 });
 
@@ -151,10 +153,15 @@ io.on("connection", (socket) => {
   });
 });
 
-app.get("/", (req, res) => {
-  res.send("hello world");
+app.get("/api", (req, res) => {
+  const path = `/api/item/${v4()}`;
+  res.setHeader("Content-Type", "text/html");
+  res.setHeader("Cache-Control", "s-max-age=1, stale-while-revalidate");
+  res.end(`Hello! Go to item: <a href="${path}">${path}</a>`);
 });
 
 server.listen(port, () => {
   console.log(`listening on *:${port}`);
 });
+
+module.exports = app;
