@@ -7,8 +7,8 @@ const app = express(); // initialize express
 
 const server = http.createServer(app);
 
-// set port to value received from environment variable or 8080 if null
-const port = process.env.PORT || 8080;
+// set port to value received from environment variable or 4242 if null
+const port = process.env.PORT || 4242;
 
 // upgrade http server to websocket server
 const io = new Server(server, {
@@ -139,6 +139,10 @@ io.on("connection", (socket) => {
 
     rooms.delete(data.roomId); // <- 4 delete room from rooms map
   });
+});
+
+app.get("/", (req, res) => {
+  res.send("hello world");
 });
 
 server.listen(port, () => {
