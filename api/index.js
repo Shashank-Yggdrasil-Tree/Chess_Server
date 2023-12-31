@@ -39,7 +39,10 @@ const port = process.env.PORT || 4242;
 // upgrade http server to websocket server
 const io = new Server(server, {
   cors: {
-    origin: "https://chess-vite-client.vercel.app",
+    origin: [
+      "https://chess-vite-client.vercel.app",
+      "https://chess-vite-client.vercel.app/",
+    ],
     methods: ["GET", "POST"],
     allowedHeaders: ["Access-Control-Allow-Origin"],
     credentials: true,
