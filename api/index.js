@@ -11,6 +11,18 @@ app.use(cors());
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "http://localhost:5173");
   res.header("Access-Control-Allow-Headers", "Content-Type");
+  res.setHeader("Access-Control-Allow-Credentials", true);
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  // another common pattern
+  // res.setHeader('Access-Control-Allow-Origin', req.headers.origin);
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET,OPTIONS,PATCH,DELETE,POST,PUT"
+  );
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version"
+  );
   next();
 });
 
@@ -19,32 +31,17 @@ const server = http.createServer(app);
 // set port to value received from environment variable or 4242 if null
 const port = process.env.PORT || 4242;
 
-const allowCors = (socket, next) => {
-  socket.handshake.headers["Access-Control-Allow-Credentials"] = true;
-  socket.handshake.headers["Access-Control-Allow-Origin"] = "*";
-  socket.handshake.headers["Access-Control-Allow-Methods"] =
-    "GET,OPTIONS,PATCH,DELETE,POST,PUT";
-  socket.handshake.headers["Access-Control-Allow-Headers"] =
-    "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version";
-
-  // Handle OPTIONS requests
-  if (socket.handshake.method === "OPTIONS") {
-    socket.disconnect(true);
-    return;
-  }
-
-  // Call the next middleware in the chain
-  next();
-};
-
 // Use the middleware with your Socket.IO server
 
 // upgrade http server to websocket server
 const io = new Server(server, {
-  cors: "*", // allow connection from any origin
+  cors: {
+    origin: "http://localhost:5173",
+    methods: ["GET", "POST"],
+    allowedHeaders: ["Access-Control-Allow-Origin"],
+    credentials: true,
+  },
 });
-
-io.use(allowCors);
 
 // Note:
 // For simplicity, we’ll be making use of a Javascript Map.
