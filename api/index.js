@@ -23,6 +23,8 @@ import authRoute from '../routes/auth.js'
 import refreshRoute from '../routes/refresh.js'
 import logoutRoute from '../routes/logout.js'
 import cookieParser from 'cookie-parser'
+import playersRouter from '../routes/api/players.js'
+import friendsRouter from '../routes/api/friends.js'
 
 export const app = express() // initialize express
 // set port to value received from environment variable or 4242 if null
@@ -56,11 +58,11 @@ const io = new Server(server, {
     cors: corsOptions,
 })
 
-const rooms = new Map()
+const roomsMap = new Map()
 
-function isValidRequestBody(body) {
-    return body !== null && body !== undefined && body !== 0 && body !== false && body !== ''
-}
+// function isValidRequestBody(body) {
+//     return body !== null && body !== undefined && body !== 0 && body !== false && body !== ''
+// }
 
 // io.connection
 io.on('connection', (socket) => {
@@ -80,12 +82,12 @@ io.on('connection', (socket) => {
         await socket.join(roomId)
 
         // set roomId as a key and roomData including players as value in the map
-        rooms.set(roomId, {
+        roomsMap.set(roomId, {
             roomId,
             players: [{ id: socket.id, username: socket.data?.username }],
         })
 
-        rooms.forEach((room, roomId) => {
+        roomsMap.forEach((room, roomId) => {
             console.log(`Players in room ${roomId}:`, room.players)
         })
 
@@ -94,7 +96,7 @@ io.on('connection', (socket) => {
 
     socket.on('joinRoom', async (args, callback) => {
         // check if room exists and has a player waiting
-        const room = rooms.get(args.roomId)
+        const room = roomsMap.get(args.roomId)
 
         let error, message
 
@@ -136,9 +138,9 @@ io.on('connection', (socket) => {
             players: [...room.players, { id: socket.id, username: socket.data?.username }],
         }
 
-        rooms.set(args.roomId, roomUpdate)
+        roomsMap.set(args.roomId, roomUpdate)
 
-        rooms.forEach((room, roomId) => {
+        roomsMap.forEach((room, roomId) => {
             console.log(`Players in room ${roomId}:`, room.players)
         })
 
@@ -158,7 +160,7 @@ io.on('connection', (socket) => {
     socket.on('message', (args, callback) => {
         console.log('args of message', args)
         console.log('callback of message', callback)
-        const room = rooms.get(args.roomId)
+        const room = roomsMap.get(args.roomId)
 
         let error, m
 
@@ -204,20 +206,19 @@ io.on('connection', (socket) => {
     })
 
     socket.on('disconnect', () => {
-        const gameRooms = Array.from(rooms.values()) // <- 1
+        const gameRooms = Array.from(roomsMap.values()) // <- 1
 
         gameRooms.forEach((room) => {
-            // <- 2
-            const userInRoom = room.players.find((player) => player.id === socket.id) // <- 3
+            const userInRoom = room.players.find((player) => player.id === socket.id)
 
             if (userInRoom) {
                 if (room.players.length < 2) {
                     // if there's only 1 player in the room, close it and exit.
-                    rooms.delete(room.roomId)
+                    roomsMap.delete(room.roomId)
                     return
                 }
 
-                socket.to(room.roomId).emit('playerDisconnected', userInRoom) // <- 4
+                socket.to(room.roomId).emit('playerDisconnected', userInRoom)
             }
         })
     })
@@ -232,11 +233,11 @@ io.on('connection', (socket) => {
             s.leave(data.roomId) // <- 3 and make them leave the room on socket.io
         })
 
-        rooms.delete(data.roomId) // <- 4 delete room from rooms map
+        roomsMap.delete(data.roomId) // <- 4 delete room from roomsMap map
     })
 
     socket.on('logout', () => {
-        const gameRooms = Array.from(rooms.values())
+        const gameRooms = Array.from(roomsMap.values())
 
         gameRooms.forEach((room) => {
             const userInRoom = room.players.find((player) => player.id === socket.id)
@@ -249,7 +250,7 @@ io.on('connection', (socket) => {
 
                 if (room.players.length === 0) {
                     // If there are no more players in the room, close it
-                    rooms.delete(room.roomId)
+                    roomsMap.delete(room.roomId)
                 }
             }
         })
@@ -266,6 +267,7 @@ app.use('/register', registerRoute) // register
 app.use('/auth', authRoute) //login
 app.use('/refresh', refreshRoute)
 app.use('/logout', logoutRoute)
+app.use('/api/friend', friendsRouter)
 
 app.get('/q', async (req, res) => {
     res.send('qwerty')
@@ -273,8 +275,10 @@ app.get('/q', async (req, res) => {
 
 app.use(verifyJWT)
 // Simple route to fetch users from the 'user' table
+app.use('/api/search', playersRouter)
+
 app.get('/power', async (req, res) => {
-    res.send('hello admin')
+    res.json('hello admin')
 })
 
 // app.get('/validate-username', async (req, res) => {
