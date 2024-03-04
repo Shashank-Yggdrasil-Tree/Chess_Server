@@ -59,6 +59,7 @@ const io = new Server(server, {
 })
 
 const roomsMap = new Map()
+let onlineList = []
 
 // function isValidRequestBody(body) {
 //     return body !== null && body !== undefined && body !== 0 && body !== false && body !== ''
@@ -75,11 +76,57 @@ io.on('connection', (socket) => {
         // callback here refers to the callback function from the client passed as data
         console.log('username', username)
         socket.data.username = username
+
+        socket.join(username)
+
+        socket.join('globalRoom')
+
+        if (onlineList.indexOf(username) === -1) {
+            onlineList.push(username)
+            console.log(onlineList)
+        }
     })
 
-    socket.on('createRoom', async (callback) => {
+    socket.on('createRoom', async (args, callback) => {
+        console.log('challenge has been created by: ', args.challenger)
+        console.log('challenge should be sent to: ', args.challengee)
+        console.log('socket.data', socket.data.username)
+
+        let error, m
+
+        if (!socket.data?.username) {
+            // if room does not exist
+            error = true
+            m = 'username is undefined in socket data'
+        }
+        // else if (socket.data.some())
+
+        if (error) {
+            // if there's an error, check if the client passed a callback,
+            // call the callback (if it exists) with an error object and exit or
+            // just exit if the callback is not given
+
+            if (callback) {
+                // if user passed a callback, call it with an error payload
+                callback({
+                    error,
+                    m,
+                })
+            }
+
+            return // exit
+        }
+
         const roomId = uuidV4()
         await socket.join(roomId)
+
+        // Handle custom event for sending notifications
+        // socket.on('sendChallenge', (data) => {
+        //     // Emit the notification to the specific client
+        //     io.to(data.userId).emit('notification', { message: data.message })
+        // })
+
+        socket.to(args.challengee).emit('challenge', roomId)
 
         // set roomId as a key and roomData including players as value in the map
         roomsMap.set(roomId, {
@@ -217,6 +264,9 @@ io.on('connection', (socket) => {
                     roomsMap.delete(room.roomId)
                     return
                 }
+
+                // removing the username from onList on disconnection
+                onlineList = onlineList.filter((username) => userInRoom.username !== username)
 
                 socket.to(room.roomId).emit('playerDisconnected', userInRoom)
             }
