@@ -11,7 +11,7 @@ import { v4 as uuidV4 } from 'uuid'
 import { logger } from '../middleware/logEvents.js'
 import { credentials } from '../middleware/credentials.js'
 import mongoose from 'mongoose'
-import { connectDB } from '../config/dbconfig.js'
+import { connectDB } from '../config/dbConfig.js'
 
 import { errorHandler } from '../middleware/errorHandler.js'
 import { verifyJWT } from '../middleware/verifyJWT.js'
