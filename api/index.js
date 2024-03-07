@@ -26,12 +26,21 @@ import cookieParser from 'cookie-parser'
 import playersRouter from '../routes/api/players.js'
 import friendsRouter from '../routes/api/friends.js'
 
+const path = require('path')
 export const app = express() // initialize express
 // set port to value received from environment variable or 4242 if null
 const port = process.env.PORT || 4242
 
 // Connect to MongoDB
 connectDB()
+
+// Serve the static files from the React app
+app.use(express.static(path.join(__dirname, 'client_build')))
+
+// Handles any requests that don't match the ones above
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'client/build', 'index.html'))
+})
 
 // custom middleware logger
 app.use(logger)
@@ -330,89 +339,6 @@ app.use('/api/search', playersRouter)
 app.get('/power', async (req, res) => {
     res.json('hello admin')
 })
-
-// app.get('/validate-username', async (req, res) => {
-//     const username = req.query.username
-//     if (!username) {
-//         return res.status(400).send({ status: 'error', message: 'Username is required' })
-//     }
-
-//     try {
-//         const username_exists = await usernameExists(username)
-//         if (username_exists === '1') {
-//             res.send({ status: 200, message: 1 })
-//             // or use 409 for conflict
-//         } else {
-//             res.send({ status: 200, message: 0 })
-//         }
-//     } catch (error) {
-//         res.status(500).send('Internal Server Error')
-//     }
-// })
-
-// app.post('/register', async (req, res) => {
-//     if (!isValidRequestBody(req.body)) {
-//         return res.status(400).json({ message: 'Invalid or empty request body' })
-//     }
-
-//     const { username, password, confirmPassword } = req.body
-
-//     const duplicate = await usernameExists(username)
-//     if (duplicate) {
-//         return res.status(401).json({ message: 'Username already exists' })
-//     }
-
-//     if (password !== confirmPassword) {
-//         return res.status(400).json({ message: 'Passwords do not match' })
-//     }
-
-//     // try {
-//     //     const hashedPassword = await bcrypt.hash(password, 10)
-
-//     //     // const result = await pool.query('INSERT INTO users (username, password) VALUES ($1, $2)', [
-//     //     //     username,
-//     //     //     hashedPassword,
-//     //     // ])
-
-//     //     // if (result.rowCount > 0) {
-//     //     //     return res.status(201).json({ userCreated: true })
-//     //     // } else {
-//     //     //     return res.status(500).json({ message: 'Something went wrong' })
-//     //     // }
-//     // } catch (error) {
-//     //     console.error('Error executing query', error)
-//     //     return res.status(500).send('Internal Server Error')
-//     // }
-// })
-
-// app.post('/login', async (req, res) => {
-//     if (!isValidRequestBody(req.body)) {
-//         return res.status(400).json({ message: 'Invalid or empty request body' })
-//     }
-
-//     const { username, password } = req.body
-
-//     // try {
-//     //     const result = await pool.query('SELECT username, password FROM users WHERE username = $1', [username])
-
-//     //     if (result.rows.length === 0) {
-//     //         return res.status(401).json({ message: 'User not found' })
-//     //     }
-
-//     //     const hashedPassword = result.rows[0].password
-
-//     //     const passwordMatch = await bcrypt.compare(password, hashedPassword)
-
-//     //     if (!passwordMatch) {
-//     //         return res.status(401).json({ message: 'Invalid password' })
-//     //     }
-
-//     //     return res.status(200).json({ isLoggedIn: true })
-//     // } catch (error) {
-//     //     console.error('Error executing query', error)
-//     //     return res.status(500).send('Internal Server Error')
-//     // }
-// })
 
 app.use(errorHandler)
 

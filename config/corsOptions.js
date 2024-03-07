@@ -1,7 +1,7 @@
 export const allowedOrigins = [
     'https://chess-vite-client.vercel.app',
-    'https://chess-vite-client.vercel.app/playvfriend',
     'http://localhost:5173',
+    'http://192.168.253.140:5173',
 ]
 
 export const corsOptions = {
