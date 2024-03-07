@@ -26,21 +26,13 @@ import cookieParser from 'cookie-parser'
 import playersRouter from '../routes/api/players.js'
 import friendsRouter from '../routes/api/friends.js'
 
-const path = require('path')
+import path from 'path'
 export const app = express() // initialize express
 // set port to value received from environment variable or 4242 if null
 const port = process.env.PORT || 4242
 
 // Connect to MongoDB
 connectDB()
-
-// Serve the static files from the React app
-app.use(express.static(path.join(__dirname, 'client_build')))
-
-// Handles any requests that don't match the ones above
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'client/build', 'index.html'))
-})
 
 // custom middleware logger
 app.use(logger)
@@ -332,12 +324,22 @@ app.get('/q', async (req, res) => {
     res.send('qwerty')
 })
 
-app.use(verifyJWT)
+// Middleware for JWT verification
+app.use(['/api/search', '/power'], verifyJWT)
+
 // Simple route to fetch users from the 'user' table
 app.use('/api/search', playersRouter)
 
 app.get('/power', async (req, res) => {
     res.json('hello admin')
+})
+
+// Serve the static files from the React app
+app.use(express.static(path.resolve('client_build')))
+
+// Handles any requests that don't match the ones above
+app.get('*', (req, res) => {
+    res.sendFile(path.resolve('client_build', 'index.html'))
 })
 
 app.use(errorHandler)
