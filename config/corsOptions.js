@@ -3,6 +3,7 @@ export const allowedOrigins = [
     'http://localhost:5173',
     'http://192.168.253.140:5173',
     'http://localhost:4242',
+    'https://chess-server-8i1v.onrender.com',
 ]
 
 export const corsOptions = {

@@ -8875,3 +8875,4 @@ Friday, March 8th, 2024 at 1:42:32 AM GMT+05:30		e3319e08-2146-41ac-9691-c1ba116
 Friday, March 8th, 2024 at 1:42:32 AM GMT+05:30		a52ffc0d-17ae-4bb2-b06f-248ab3ccdb8c	GET	undefined	/svg_icons/chess_board.svg
 Friday, March 8th, 2024 at 1:42:32 AM GMT+05:30		3ed1a808-2cb3-4379-91a3-36272813164a	GET	undefined	/svg_icons/hand_shake.svg
 Friday, March 8th, 2024 at 1:42:44 AM GMT+05:30		631f605a-8e98-47f5-9af8-83e7e16f0302	GET	undefined	/logout
+Friday, March 8th, 2024 at 1:55:11 AM GMT+05:30		2fab0605-fc9c-40aa-8676-70cca81ccfa6	OPTIONS	https://chess-server-8i1v.onrender.com	/auth
