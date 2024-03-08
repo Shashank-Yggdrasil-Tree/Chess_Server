@@ -15,14 +15,19 @@ const handleRefreshToken = async (req, res) => {
 
     // Detected refresh token reuse!
     if (!foundUser) {
-        jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, async (err, decoded) => {
-            if (err) return res.sendStatus(403) //Forbidden
-            console.log('attempted refresh token reuse!')
-            const hackedUser = await Player.findOne({ username: decoded.username }).exec()
-            hackedUser.refreshToken = []
-            const result = await hackedUser.save()
-            console.log(result)
-        })
+        try {
+            jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, async (err, decoded) => {
+                if (err) return res.sendStatus(403) //Forbidden
+                console.log('attempted refresh token reuse!')
+                const hackedUser = await Player.findOne({ username: decoded.username }).exec()
+                hackedUser.refreshToken = []
+                const result = await hackedUser.save()
+                console.log(result)
+            })
+        } catch (err) {
+            console.error('Error verifying refresh token:', err)
+            return res.sendStatus(403) // Forbidden
+        }
         return res.sendStatus(403) //Forbidden
     }
 

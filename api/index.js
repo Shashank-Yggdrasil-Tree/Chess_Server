@@ -127,7 +127,7 @@ io.on('connection', (socket) => {
         //     io.to(data.userId).emit('notification', { message: data.message })
         // })
 
-        socket.to(args.challengee).emit('challenge', roomId)
+        socket.to(args.challengee).emit('challenge', { roomId, challenger: args.challenger })
 
         // set roomId as a key and roomData including players as value in the map
         roomsMap.set(roomId, {
@@ -275,6 +275,7 @@ io.on('connection', (socket) => {
     })
 
     socket.on('closeRoom', async (data) => {
+        console.log(data)
         socket.to(data.roomId).emit('closeRoom', data) // <- 1 inform others in the room that the room is closing
 
         const clientSockets = await io.in(data.roomId).fetchSockets() // <- 2 get all sockets in a room
