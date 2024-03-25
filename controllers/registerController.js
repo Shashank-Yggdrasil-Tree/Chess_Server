@@ -6,7 +6,7 @@ import { usernameExists } from '../api/index.js'
 
 const handleNewUser = async (req, res) => {
     const { user, pwd, cpwd } = req.body
-    console.log({ user, pwd, cpwd })
+    //console.log({ user, pwd, cpwd })
     if (!user || !pwd || !cpwd)
         return res.status(400).json({ message: 'Username, Password and "Confirm Password" value are required.' })
 
@@ -28,7 +28,7 @@ const handleNewUser = async (req, res) => {
             password: hashedPwd,
         })
 
-        console.log(result)
+        //console.log(result)
 
         // const result = await pool.query('INSERT INTO users (username, password) VALUES ($1, $2)', [user, hashedPwd])
 

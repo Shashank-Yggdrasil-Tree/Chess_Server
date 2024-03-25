@@ -3,7 +3,7 @@ import Player from '../model/Player.js'
 const handleLogout = async (req, res) => {
     // On client, also delete the accessToken
     const cookies = req.cookies
-    console.log(cookies)
+    //console.log(cookies)
     if (!cookies?.__chess_jwt) return res.sendStatus(204) //No content
     const refreshToken = cookies.__chess_jwt
 
@@ -21,7 +21,7 @@ const handleLogout = async (req, res) => {
     // Delete refreshToken in db
     foundUser.refreshToken = foundUser.refreshToken.filter((rt) => rt !== refreshToken)
     const result = await foundUser.save()
-    console.log(result)
+    //console.log(result)
 
     res.clearCookie('__chess_jwt', { httpOnly: true, sameSite: 'None', secure: true })
     res.sendStatus(204)

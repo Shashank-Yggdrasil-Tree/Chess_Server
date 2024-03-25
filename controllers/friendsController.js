@@ -102,7 +102,7 @@ const sendFriendRequest = async (req, res) => {
     } catch (error) {
         // If an error occurs, abort the transaction
         await session.abortTransaction()
-        console.log(error)
+        //console.log(error)
         res.status(500).json({ message: 'Error sending friend request' })
     } finally {
         session.endSession()

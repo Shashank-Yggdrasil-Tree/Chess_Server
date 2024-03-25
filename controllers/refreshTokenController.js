@@ -6,7 +6,7 @@ import jwt from 'jsonwebtoken'
 
 const handleRefreshToken = async (req, res) => {
     const cookies = req.cookies
-    console.log('cookies', cookies)
+    //console.log('cookies', cookies)
     if (!cookies?.__chess_jwt) return res.sendStatus(401)
     const refreshToken = cookies.__chess_jwt
     res.clearCookie('__chess_jwt', { httpOnly: true, sameSite: 'None', secure: true })
@@ -18,11 +18,11 @@ const handleRefreshToken = async (req, res) => {
         try {
             jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, async (err, decoded) => {
                 if (err) return res.sendStatus(403) //Forbidden
-                console.log('attempted refresh token reuse!')
+                //console.log('attempted refresh token reuse!')
                 const hackedUser = await Player.findOne({ username: decoded.username }).exec()
                 hackedUser.refreshToken = []
                 const result = await hackedUser.save()
-                console.log(result)
+                //console.log(result)
             })
         } catch (err) {
             console.error('Error verifying refresh token:', err)

@@ -7,7 +7,7 @@ import jwt from 'jsonwebtoken'
 const handleLogin = async (req, res) => {
     const cookies = req.cookies
     const { user, pwd } = req.body
-    console.log({ user, pwd })
+    //console.log({ user, pwd })
     if (!user || !pwd) return res.status(400).json({ message: 'Username and password are required.' })
 
     const foundUser = await Player.findOne({ username: user }).exec()
@@ -16,7 +16,7 @@ const handleLogin = async (req, res) => {
     }
 
     // evaluate password
-    // console.log({ pwd, hpwd: foundUser.password, user: foundUser.username })
+    // //console.log({ pwd, hpwd: foundUser.password, user: foundUser.username })
     const match = await bcrypt.compare(pwd, foundUser.password)
     if (match) {
         // create JWTs
@@ -44,7 +44,7 @@ const handleLogin = async (req, res) => {
 
             // Detected refresh token reuse!
             if (!foundToken) {
-                console.log('attempted refresh token reuse at login')
+                //console.log('attempted refresh token reuse at login')
                 // clear out All previous refresh tokens
                 newRefreshTokenArray = []
             }
@@ -55,7 +55,7 @@ const handleLogin = async (req, res) => {
         // Saving refreshToken with current user
         foundUser.refreshToken = [...newRefreshTokenArray, newRefreshToken]
         const result = await foundUser.save()
-        console.log(result)
+        //console.log(result)
 
         res.cookie('__chess_jwt', newRefreshToken, {
             httpOnly: true,

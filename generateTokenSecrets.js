@@ -7,5 +7,5 @@ function generateTokenSecret() {
 const accessTokenSecret = generateTokenSecret()
 const refreshTokenSecret = generateTokenSecret()
 
-console.log('Access Token Secret:', accessTokenSecret)
-console.log('Refresh Token Secret:', refreshTokenSecret)
+//console.log('Access Token Secret:', accessTokenSecret)
+//console.log('Refresh Token Secret:', refreshTokenSecret)
