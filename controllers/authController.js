@@ -59,7 +59,7 @@ const handleLogin = async (req, res) => {
 
         res.cookie('__chess_jwt', newRefreshToken, {
             httpOnly: true,
-            sameSite: 'None',
+            sameSite: 'Strict',
             secure: true,
             maxAge: 24 * 60 * 60 * 1000,
         })
