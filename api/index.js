@@ -68,7 +68,7 @@ app.use(express.json())
 // GLOBAL MIDDLEWARE
 
 const limiter = rateLimit({
-    max: 1000,
+    max: 650,
     windowMs: 60 * 60 * 1000,
     handler: (req, res) => {
         res.status(429).send('Too many request, please try again in an hour')

@@ -1,4 +1,7 @@
-export const allowedOrigins = ['http://localhost:5173', 'http://localhost:4242', 'https://chess-festival.onrender.com']
+import dotenv from 'dotenv'
+dotenv.config()
+
+export const allowedOrigins = process.env.BASE_URL
 
 export const corsOptions = {
     origin: (origin, callback) => {
