@@ -1,13 +1,12 @@
 import dotenv from 'dotenv'
 dotenv.config()
 import express from 'express'
+import rateLimit from 'express-rate-limit'
 import cors from 'cors'
 import http from 'http'
 // import { pool } from '../db/dbConnection.js'
 import Player from '../model/Player.js'
-import bcrypt from 'bcrypt'
 import { Server } from 'socket.io'
-import { v4 as uuidV4 } from 'uuid'
 import { logger } from '../middleware/logEvents.js'
 import { credentials } from '../middleware/credentials.js'
 import mongoose from 'mongoose'
@@ -65,6 +64,18 @@ app.use(express.urlencoded({ extended: false }))
 
 app.use(cors(corsOptions))
 app.use(express.json())
+
+// GLOBAL MIDDLEWARE
+
+const limiter = rateLimit({
+    max: 1000,
+    windowMs: 60 * 60 * 1000,
+    handler: (req, res) => {
+        res.status(429).send('Too many request, please try again in an hour')
+    },
+})
+
+app.use('/', limiter)
 
 // upgrade http server to websocket server
 export const io = new Server(server, {
