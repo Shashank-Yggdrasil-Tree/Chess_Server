@@ -124,12 +124,12 @@ app.use('/api/search', playersRouter)
 app.use('/api/friend', friendsRouter)
 
 // // Serve the static files from the React app
-app.use(express.static(path.resolve('client_build')))
+// app.use(express.static(path.resolve('client_build')))
 
 // Handles any requests that don't match the ones above
-app.get('*', (req, res) => {
-    res.sendFile(path.resolve('client_build', 'index.html'))
-})
+// app.get('*', (req, res) => {
+//     res.sendFile(path.resolve('client_build', 'index.html'))
+// })
 
 app.use(errorHandler)
 
