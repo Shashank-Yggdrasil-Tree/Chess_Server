@@ -68,7 +68,7 @@ app.use(express.json())
 // GLOBAL MIDDLEWARE
 
 const limiter = rateLimit({
-    max: 650,
+    max: 5,
     windowMs: 60 * 60 * 1000,
     handler: (req, res) => {
         res.status(429).send('Too many request, please try again in an hour')
@@ -110,10 +110,6 @@ app.use('/register', registerRoute) // register
 app.use('/auth', authRoute) //login
 app.use('/refresh', refreshRoute)
 app.use('/logout', logoutRoute)
-
-app.get('/q', async (req, res) => {
-    res.send('qwerty')
-})
 
 // Middleware for JWT verification
 app.use(['/api/search', '/api/friend'], verifyJWT)
