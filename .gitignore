@@ -24,3 +24,6 @@ yarn-debug.log*
 
 *.txt
 logs/reqLog.txt
+
+
+.env
