@@ -1,7 +1,7 @@
 import dotenv from 'dotenv'
 dotenv.config()
 import express from 'express'
-import rateLimit from 'express-rate-limit'
+// import rateLimit from 'express-rate-limit'
 import cors from 'cors'
 import http from 'http'
 // import { pool } from '../db/dbConnection.js'
@@ -39,8 +39,8 @@ import { handleOnlineFriends } from '../eventHandlers/friendsOnlineHandler.js'
 import { handleOnlineStatus } from '../eventHandlers/onlineHandler.js'
 import { handleOfflineStatus } from '../eventHandlers/offlineHandler.js'
 export const app = express() // initialize express
-// set port to value received from environment variable or 3000 if null
-const port = process.env.PORT || 3000
+// set port to value received from environment variable or 4242 if null
+const port = process.env.PORT || 4242
 
 // Connect to MongoDB
 connectDB()
@@ -67,15 +67,15 @@ app.use(express.json())
 
 // GLOBAL MIDDLEWARE
 
-const limiter = rateLimit({
-    max: 100,
-    windowMs: 60 * 60 * 1000,
-    handler: (req, res) => {
-        res.status(429).send('Too many request, please try again in an hour')
-    },
-})
+// const limiter = rateLimit({
+//     max: 100,
+//     windowMs: 60 * 60 * 1000,
+//     handler: (req, res) => {
+//         res.status(429).send('Too many request, please try again in an hour')
+//     },
+// })
 
-app.use('/', limiter)
+// app.use('/', limiter)
 
 // upgrade http server to websocket server
 export const io = new Server(server, {
