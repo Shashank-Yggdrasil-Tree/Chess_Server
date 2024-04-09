@@ -39,8 +39,8 @@ import { handleOnlineFriends } from '../eventHandlers/friendsOnlineHandler.js'
 import { handleOnlineStatus } from '../eventHandlers/onlineHandler.js'
 import { handleOfflineStatus } from '../eventHandlers/offlineHandler.js'
 export const app = express() // initialize express
-// set port to value received from environment variable or 4242 if null
-const port = process.env.PORT || 4242
+// set port to value received from environment variable or 3000 if null
+const port = process.env.PORT || 3000
 
 // Connect to MongoDB
 connectDB()
