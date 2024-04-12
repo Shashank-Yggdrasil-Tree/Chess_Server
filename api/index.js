@@ -111,6 +111,10 @@ app.use('/auth', authRoute) //login
 app.use('/refresh', refreshRoute)
 app.use('/logout', logoutRoute)
 
+app.get('/q', (req, res) => {
+    res.send('qwertyui')
+})
+
 // Middleware for JWT verification
 app.use(['/api/search', '/api/friend'], verifyJWT)
 
